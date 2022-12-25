@@ -11,6 +11,7 @@ import openai
 
 #openai.api_key = os.getenv("OPENAI_API_KEY")
 key ='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'
+key = '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'
 openai.api_key = key
 
 def queryGPT3(model = "text-davinci-003", query="What is the meaning of life?"):
