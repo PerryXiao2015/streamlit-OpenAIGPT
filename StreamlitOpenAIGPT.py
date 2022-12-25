@@ -3,13 +3,34 @@
 #pip install streamlit
 
 import streamlit as st
-import numpy as np
-import pandas as pd
+#import numpy as np
+#import pandas as pd
 
 import os
+import openai
+
+#openai.api_key = os.getenv("OPENAI_API_KEY")
+key ='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'
+openai.api_key = key
+
+def queryGPT3(model = "text-davinci-003", query="What is the meaning of life?"):
+    results = ""
+    response = openai.Completion.create(
+        #engine="text-davinci-002",
+        engine = model,
+        #prompt="Write an joke about belgian people",
+        prompt = query,
+        temperature=0.7,
+        max_tokens=30,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    print("Engine: ", model)
+    results = response.choices[0].text
+    return results
 
 
-mode = 1
 
 def select_models():
     st.sidebar.markdown("# OpenAI GPT 3 Models")
@@ -17,36 +38,35 @@ def select_models():
          'Select an OpenAI GPT 3 Model:',
          ["text-davinci-001","text-davinci-002","text-davinci-003"], index=0)
     st.sidebar.write('You selected:', option)
-    if option == "text-davinci-001":
-        mode = 1
-    elif option == "text-davinci-002":
-        mode = 2
-    elif option == "text-davinci-003":
-        mode = 3
-    return mode
+    return option
 
 
 
 def main():
-    """Image Classification App"""
-    query = st.text_input('Write your query here:', 'What is the meaning of life?')
-
+    """OpenAI GPT 3 App"""
+    model = "text-davinci-003"
     st.title("Streamlit OpenAI GPT 3 App")
     st.text("Build with Streamlit and OpenAI GPT 3")
-    if st.button('Say hello'):
-        st.write('Why hello there')
-    else:
-        st.write('Goodbye')
     
     activities = ["Streamlit OpenAI GPT 3","About"]
     choice = st.sidebar.selectbox("Select Activty",activities)
     if choice == 'Streamlit OpenAI GPT 3':
-        mode = select_models()
+        model = select_models()
 
     elif choice == 'About':
         st.subheader("About Streamlit OpenAI GPT 3 App")
         st.markdown("Built with Streamlit by [LSBU](https://www.lsbu.ac.uk/)")
         st.text("Professor Perry Xiao")
         st.success("Copyright @ 2022 London South Bank University")
+
+    query = st.text_input('Write your query here:', 'What is the meaning of life?')
+    if st.button('Query OpenAI GPT 3'):
+        #st.write('Why hello there')
+        answer = queryGPT3(model,query)
+        st.write(answer)
+    else:
+        #st.write('Goodbye')
+        pass 
+
 if __name__ == '__main__':
     main()	
