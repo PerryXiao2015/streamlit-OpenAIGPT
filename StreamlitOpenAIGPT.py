@@ -9,9 +9,10 @@ import streamlit as st
 import os
 import openai
 
+openai.organization = "org-mKJgDGXpv57x98vta4bKwrLH"
 #openai.api_key = os.getenv("OPENAI_API_KEY")
-key ='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'
-key = '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'
+key ='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'
+
 openai.api_key = key
 
 def queryGPT3(model = "text-davinci-003", query="What is the meaning of life?"):
