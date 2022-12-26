@@ -9,9 +9,14 @@ import streamlit as st
 import os
 import openai
 
+import pyttsx3
+engine = pyttsx3.init()
+import speech_recognition as sr
+print(sr.__version__)
+
 openai.organization = "org-mKJgDGXpv57x98vta4bKwrLH"
 #openai.api_key = os.getenv("OPENAI_API_KEY")
-key ='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'
+key ='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'
 
 openai.api_key = key
 
@@ -42,25 +47,7 @@ def select_models():
     st.sidebar.write('You selected:', option)
     return option
 
-
-
-def main():
-    """OpenAI GPT 3 App"""
-    model = "text-davinci-003"
-    st.title("Streamlit OpenAI GPT 3 App")
-    st.text("Build with Streamlit and OpenAI GPT 3")
-    
-    activities = ["Streamlit OpenAI GPT 3","About"]
-    choice = st.sidebar.selectbox("Select Activty",activities)
-    if choice == 'Streamlit OpenAI GPT 3':
-        model = select_models()
-
-    elif choice == 'About':
-        st.subheader("About Streamlit OpenAI GPT 3 App")
-        st.markdown("Built with Streamlit by [LSBU](https://www.lsbu.ac.uk/)")
-        st.text("Professor Perry Xiao")
-        st.success("Copyright @ 2022 London South Bank University")
-
+def show_query_text(model):
     query = st.text_input('Write your query here:', 'What is the meaning of life?')
     if st.button('Query OpenAI GPT 3'):
         #st.write('Why hello there')
@@ -69,6 +56,49 @@ def main():
     else:
         #st.write('Goodbye')
         pass 
+
+def show_query_audio(model):
+    if st.button('Ask OpenAI GPT 3'):
+        #st.write('Why hello there')
+        #answer = queryGPT3(model,query)
+        #st.write(answer)
+        text = "Welcome to London"
+        r = sr.Recognizer()
+        with sr.Microphone() as source:
+            print(source)
+            audio_data = r.record(source, duration = 5)
+            print("Recognizing...")
+            text = r.recognize_google(audio_data)
+            st.write(text)
+        engine.say(text)
+        engine.runAndWait()
+
+    else:
+        #st.write('Goodbye')
+        pass 
+
+
+def main():
+    """OpenAI GPT 3 App"""
+    model = "text-davinci-003"
+    st.title("Streamlit OpenAI GPT 3 App")
+    st.text("Build with Streamlit and OpenAI GPT 3")
+    
+    activities = ["Text GPT3 Query","Audio GPT3 Query","About"]
+    choice = st.sidebar.selectbox("Select Activty",activities)
+    if choice == 'Text GPT3 Query':
+        model = select_models()
+        show_query_text(model)
+    elif choice == 'Audio GPT3 Query':
+        model = select_models()
+        show_query_audio(model)
+
+    elif choice == 'About':
+        st.subheader("About Streamlit OpenAI GPT 3 App")
+        st.markdown("Built with Streamlit by [LSBU](https://www.lsbu.ac.uk/)")
+        st.text("Professor Perry Xiao")
+        st.success("Copyright @ 2022 London South Bank University")
+
 
 if __name__ == '__main__':
     main()	
